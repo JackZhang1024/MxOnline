@@ -45,7 +45,7 @@ urlpatterns = [
     # 课程机构Url配置
     url(r'^org/', include('organization.urls', namespace="org")),
 
-    # 课程机构Url配置
+    # 机构课程Url配置
     url(r'^course/', include('courses.urls', namespace="course")),
 
     # 配置上传文件的访问处理函数

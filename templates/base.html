@@ -76,10 +76,10 @@
                         <ul>
                             <li><a href="{% url 'index' %}">首页</a></li>
                             <li>
-                                <a href="course-list.html">公开课<img class="hot" src="{% static 'images/nav_hot.png' %}"></a>
+                                <a href="{% url 'course:course_list' %}">公开课<img class="hot" src="{% static 'images/nav_hot.png' %}"></a>
                             </li>
                             <li>
-                                <a href="teachers-list.html">授课教师</a>
+                                <a href="{% url 'org:teacher_list' %}">授课教师</a>
                             </li>
                             <li class="active"><a href="{% url 'org:org_list' %}">授课机构</a></li>
                         </ul>
@@ -90,6 +90,56 @@
     </header>
 </section>
 {% block custom_bread %}
+<div class="banner">
+    <div class="wp">
+        <div class="fl">
+            <div class="imgslide">
+                <ul class="imgs">
+
+                    <li>
+                        <a href="http://www.imooc.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57a801860001c34b12000460.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57aa86a0000145c512000460.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57a801860001c34b12000460_z4Vb8zl.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57aa86a0000145c512000460_nMwvoQD.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57aa86a0000145c512000460_GXIBATC.jpg' %}"/>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="unslider-arrow prev"></div>
+            <div class="unslider-arrow next"></div>
+        </div>
+
+    </div>
+
+
+</div>
 <section>
     <div class="wp">
         <ul class="crumbs">

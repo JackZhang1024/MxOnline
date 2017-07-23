@@ -168,3 +168,11 @@ class AddFavView(View):
                 return HttpResponse('{"status": "success", "msg": "已收藏"}', content_type='application/json')
             else:
                 return HttpResponse('{"status": "fail", "msg": "收藏失败"}', content_type='application/json')
+
+
+class TeacherListView(View):
+    """
+    机构老师
+    """
+    def get(self, request):
+        return render(request, 'teachers-list.html', {})
