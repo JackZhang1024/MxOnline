@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block title %}课程机构列表 - 慕学在线网{% endblock %}
+{% block nav %}
+    <nav>
+        <div class="nav">
+            <div class="wp">
+                <ul>
+                    <li><a href="{% url 'index' %}">首页</a></li>
+                    <li>
+                        <a href="{% url 'course:course_list' %}">公开课<img class="hot"
+                                                                         src="{% static 'images/nav_hot.png' %}"></a>
+                    </li>
+                    <li>
+                        <a href="{% url 'org:teacher_list' %}">授课教师</a>
+                    </li>
+                    <li class="active"><a href="{% url 'org:org_list' %}">授课机构</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block banner %}
+{% endblock %}
 {% block custom_bread %}
     <section>
         <div class="wp">
@@ -20,13 +41,17 @@
                         <li>
                             <h2>机构类别</h2>
                             <div class="cont">
-                                <a href="?city={{ city_id }}"><span class="{% ifequal category '' %}active2{% endifequal %}">全部</span></a>
+                                <a href="?city={{ city_id }}"><span
+                                        class="{% ifequal category '' %}active2{% endifequal %}">全部</span></a>
 
-                                <a href="?category=pxjg&city={{ city_id }}"><span class="{% ifequal category 'pxjg' %}active2{% endifequal %}">培训机构</span></a>
+                                <a href="?category=pxjg&city={{ city_id }}"><span
+                                        class="{% ifequal category 'pxjg' %}active2{% endifequal %}">培训机构</span></a>
 
-                                <a href="?category=gx&city={{ city_id }}"><span class="{% ifequal category 'gx' %}active2{% endifequal %}">高校</span></a>
+                                <a href="?category=gx&city={{ city_id }}"><span
+                                        class="{% ifequal category 'gx' %}active2{% endifequal %}">高校</span></a>
 
-                                <a href="?category=gr&city={{ city_id }}"><span class="{% ifequal category 'gr' %}active2{% endifequal %}">个人</span></a>
+                                <a href="?category=gr&city={{ city_id }}"><span
+                                        class="{% ifequal category 'gr' %}active2{% endifequal %}">个人</span></a>
 
                             </div>
                         </li>
@@ -34,7 +59,8 @@
                             <h2>所在地区</h2>
                             <div class="more">更多</div>
                             <div class="cont">
-                                <a href="?all_city&category={{ category }}"><span class="{% ifequal city_id '' %}active2{% endifequal %}">全部</span></a>
+                                <a href="?all_city&category={{ category }}"><span
+                                        class="{% ifequal city_id '' %}active2{% endifequal %}">全部</span></a>
                                 {% for city in all_citys %}
                                     <a href="?city={{ city.id }}&category={{ category }}">
                                         <span class="{% ifequal city_id city.id|stringformat:"i" %}active2{% endifequal %}">{{ city.name }}</span>
@@ -49,16 +75,20 @@
                     <div class="layout">
                         <div class="head">
                             <ul class="tab_header">
-                                <li class="{% ifequal sort '' %}active{% endifequal %}"><a href="?category={{ category }}&city={{ city_id }}">全部</a></li>
-                                <li class="{% ifequal sort 'students' %}active{% endifequal %}"><a href="?sort=students&category={{ category }}&city={{ city_id }}">学习人数 &#8595;</a></li>
-                                <li class="{% ifequal sort 'course_nums' %}active{% endifequal %}"><a href="?sort=course_nums&category={{ category }}&city={{ city_id }}">课程数 &#8595;</a></li>
+                                <li class="{% ifequal sort '' %}active{% endifequal %}"><a
+                                        href="?category={{ category }}&city={{ city_id }}">全部</a></li>
+                                <li class="{% ifequal sort 'students' %}active{% endifequal %}"><a
+                                        href="?sort=students&category={{ category }}&city={{ city_id }}">学习人数 &#8595;</a></li>
+                                <li class="{% ifequal sort 'course_nums' %}active{% endifequal %}"><a
+                                        href="?sort=course_nums&category={{ category }}&city={{ city_id }}">课程数 &#8595;</a></li>
                             </ul>
                         </div>
                         {% for org in all_orgs.object_list %}
                             <dl class="des difdes">
                                 <dt>
                                     <a href="{% url 'org:org_home' org.id %}">
-                                        <img width="200" height="120" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ org.image }}"/>
+                                        <img width="200" height="120" class="scrollLoading"
+                                             data-url="{{ MEDIA_URL }}{{ org.image }}"/>
                                     </a>
                                 </dt>
                                 <dd>
@@ -91,10 +121,11 @@
                     </div>
                     <div class="pageturn">
                         <ul class="pagelist">
-                             {% if all_orgs.has_previous %}
-                                 <li class="long"><a href="?{{ all_orgs.previous_page_number.querystring }}" class="prev">上一页</a></li>
-                             {% endif %}
-                             {% for page in all_orgs.pages %}
+                            {% if all_orgs.has_previous %}
+                                <li class="long"><a href="?{{ all_orgs.previous_page_number.querystring }}" class="prev">上一页</a>
+                                </li>
+                            {% endif %}
+                            {% for page in all_orgs.pages %}
                                 {% if page %}
                                     {% ifequal page all_orgs.number %}
                                         <li class="active"><a href="?{{ page.querystirng }}">{{ page }}</a></li>
@@ -106,7 +137,8 @@
                                 {% endif %}
                             {% endfor %}
                             {% if all_orgs.has_next %}
-                                <li class="long"><a href="?{{ all_orgs.next_page_number.querystring }}" class="next">下一页</a></li>
+                                <li class="long"><a href="?{{ all_orgs.next_page_number.querystring }}" class="next">下一页</a>
+                                </li>
                             {% endif %}
                         </ul>
                     </div>
@@ -136,12 +168,12 @@
                 <div class="head">授课机构排名</div>
                 {% for org in hot_orgs %}
                     <dl class="des">
-                    <dt class="num fl">{{ org.click_nums }}</dt>
-                    <dd>
-                        <a href="{% url 'org:org_home' org.id %}"><h1>{{ org.name }}</h1></a>
-                        <p>{{ org.address }}</p>
-                    </dd>
-                </dl>
+                        <dt class="num fl">{{ org.click_nums }}</dt>
+                        <dd>
+                            <a href="{% url 'org:org_home' org.id %}"><h1>{{ org.name }}</h1></a>
+                            <p>{{ org.address }}</p>
+                        </dd>
+                    </dl>
                 {% endfor %}
             </div>
         </div>

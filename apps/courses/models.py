@@ -3,13 +3,14 @@ from __future__ import unicode_literals
 from datetime import datetime
 
 from django.db import models
-from organization.models import CourseOrg
+from organization.models import CourseOrg, Teacher
 
 # Create your models here.
 
 
 class Course(models.Model):
     course_org = models.ForeignKey(CourseOrg, verbose_name=u"课程机构", null=True, blank=True)
+    teacher = models.ForeignKey(Teacher, verbose_name=u"课程老师", null=True, blank=True)
     name = models.CharField(max_length=150, verbose_name=u"课程名")
     desc = models.CharField(max_length=300, verbose_name=u"课程描述")
     detail = models.TextField(verbose_name=u"课程详情")
@@ -22,6 +23,8 @@ class Course(models.Model):
     click_nums = models.IntegerField(default=0, verbose_name=u"点击数")
     tag = models.CharField(default=u"", max_length=20, verbose_name=u"课程标签")
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
+    you_need_know = models.CharField(max_length=100, verbose_name=u"课前须知", default=u"")
+    what_you_learn = models.CharField(max_length=100, verbose_name=u"知识获取", default=u"")
 
     class Meta:
         verbose_name = u"课程"
@@ -38,6 +41,14 @@ class Course(models.Model):
     def get_course_users(self):
         return self.usercourse_set.all()[:5]
 
+    # 获取课程的章节
+    def get_lessons(self):
+        return self.lesson_set.all()
+
+    # 获取课程评价
+    def get_comments(self):
+        return self.coursecomments_set.all().order_by('-add_time')[:20]
+
 
 class Lesson(models.Model):
     course = models.ForeignKey(Course, verbose_name=u"课程")
@@ -48,15 +59,27 @@ class Lesson(models.Model):
         verbose_name = u"章节"
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.name
+
+    # 获取章节视频
+    def get_videos(self):
+        return self.video_set.all()
+
 
 class Video(models.Model):
     lesson = models.ForeignKey(Lesson, verbose_name=u"章节")
     name = models.CharField(verbose_name=u"视频名", max_length=100)
+    learn_times = models.IntegerField(verbose_name=u"学习时长(分钟数)", default=0)
+    video_url = models.CharField(default="", verbose_name=u"视频地址", max_length=200)
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
 
     class Meta:
         verbose_name = u"视频"
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.name
 
 
 class CourseResource(models.Model):
@@ -68,3 +91,6 @@ class CourseResource(models.Model):
     class Meta:
         verbose_name = u"课程资源"
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.name
