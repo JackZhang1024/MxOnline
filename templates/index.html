@@ -1,11 +1,56 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block custome_js %}
-    <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}" type="text/javascript"></script>
-    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
-{% endblock %}
 {% block content %}
+    <div class="banner">
+    <div class="wp">
+        <div class="fl">
+            <div class="imgslide">
+                <ul class="imgs">
+
+                    <li>
+                        <a href="http://www.imooc.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57a801860001c34b12000460.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57aa86a0000145c512000460.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57a801860001c34b12000460_z4Vb8zl.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57aa86a0000145c512000460_nMwvoQD.jpg' %}"/>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://www.projectsedu.com">
+                            <img width="1200" height="478"
+                                 src="{% static 'media/banner/2016/11/57aa86a0000145c512000460_GXIBATC.jpg' %}"/>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="unslider-arrow prev"></div>
+            <div class="unslider-arrow next"></div>
+        </div>
+
+    </div>
+
+
+</div>
     <section>
         <div class="wp">
             <ul class="feature">
@@ -404,4 +449,7 @@
             </div>
         </div>
     </section>
+{% endblock %}
+{% block custom_js %}
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
 {% endblock %}

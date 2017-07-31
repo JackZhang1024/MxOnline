@@ -6,8 +6,9 @@ from django.http import HttpResponse
 
 from pure_pagination import Paginator, PageNotAnInteger
 
-from .models import CourseOrg, CityDict
+from .models import CourseOrg, CityDict, Teacher
 from .forms import UserAskForm
+from courses.models import Course
 from operation.models import UserFavorite
 # Create your views here.
 
@@ -175,4 +176,39 @@ class TeacherListView(View):
     机构老师
     """
     def get(self, request):
-        return render(request, 'teachers-list.html', {})
+        all_teachers = Teacher.objects.all()
+        sorted_teachers = Teacher.objects.all().order_by('-click_nums')[:3]
+        sort = request.GET.get('sort', "")
+        if sort:
+            if sort == 'hot':
+                all_teachers = all_teachers.order_by("-click_nums")
+
+        teacher_nums = all_teachers.count()
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+            # Provide Paginator with the request object for complete querystring generation
+        p = Paginator(all_teachers, 3, request=request)
+        all_teachers = p.page(page)
+        return render(request, 'teachers-list.html', {
+            "all_teachers": all_teachers,
+            "sorted_teachers": sorted_teachers,
+            "sort": sort,
+            "teacher_nums": teacher_nums
+        })
+
+
+class TeacherDetailView(View):
+    """
+    教师详情
+    """
+    def get(self, request, teacher_id):
+        teacher = Teacher.objects.get(id=int(teacher_id))
+        all_courses = Course.objects.filter(teacher=teacher)
+        sorted_teachers = Teacher.objects.all().order_by('-click_nums')[:3]
+        return render(request, 'teacher-detail.html', {
+            "teacher": teacher,
+            "all_courses": all_courses,
+            "sorted_teachers": sorted_teachers
+        })
