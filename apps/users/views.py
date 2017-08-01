@@ -5,10 +5,12 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import make_password
+from django.http import HttpResponse
 
 from .models import UserProfile, EmailVerifyRecord
-from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
+from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UploadImageForm
 from utils.email_send import send_register_email
+from utils.mixin_utils import LoginRequiredMixin
 
 
 class CustomBackEnd(ModelBackend):
@@ -141,3 +143,79 @@ def user_login(request):
     elif request.method == "GET":
         return render(request, "login.html", {})
 
+
+# 用户信息
+class UserInfoView(LoginRequiredMixin, View):
+    """
+    用户信息
+    """
+    def get(self, request):
+        return render(request, "usercenter-info.html", {})
+
+
+# 用户课程
+class UserCoursesView(View):
+    def get(self, request):
+        return render(request, "usercenter-mycourse.html", {})
+
+
+# 用户课程收藏
+class UserFavCoursesView(View):
+    def get(self, request):
+        return render(request, "usercenter-fav-course.html", {})
+
+
+# 用户机构收藏
+class UserFavOrgsView(View):
+    def get(self, request):
+        return render(request, "usercenter-fav-org.html", {})
+
+
+# 用户教师收藏
+class UserFavTeachersView(View):
+    def get(self, request):
+        return render(request, "usercenter-fav-teacher.html", {})
+
+
+# 用户消息
+class UserMessagesView(View):
+    def get(self, request):
+        return render(request, "usercenter-message.html", {})
+
+
+# 用户头像上传处理
+class UploadImageView(LoginRequiredMixin, View):
+    def post(self, request):
+        # 第一种写法
+        # image_form = UploadImageForm(request.POST, request.FILES)
+        # if image_form.is_valid():
+        #     #  image = image_form.cleaned_data['image']
+        #     #  request.user.image = image
+        #     # request.user.save()
+
+        # 第二种写法
+        image_form = UploadImageForm(request.POST, request.FILES, instance=request.user)
+        if image_form.is_valid():
+            image_form.save()
+            return HttpResponse('{"status": "success"}', content_type='application/json')
+        else:
+            return HttpResponse('{"status": "fail"}', content_type='application/json')
+
+
+class UpdateUserPwdView(View):
+    """
+    修改用户中心密码
+    """
+    def post(self, request):
+        modifypwd_form = ModifyPwdForm()
+        if modifypwd_form.is_valid():
+            password1 = request.POST.get("password1", "")
+            password2 = request.POST.get("password2", "")
+            if password1 != password2:
+                return HttpResponse('{"status": "fail", "msg":"密码不一致"}', content_type='application/json')
+            user = request.user
+            user.password = make_password(password1)
+            user.save()
+            return HttpResponse('{"status": "success"}', content_type='application/json')
+        else:
+            return HttpResponse('{"status": "fail", "msg":"密码错误"}', content_type='application/json')

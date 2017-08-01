@@ -3,6 +3,7 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse
+from django.db.models import Q
 
 from pure_pagination import Paginator, PageNotAnInteger
 
@@ -21,6 +22,11 @@ class OrgView(View):
         # 课程机构
         all_orgs = CourseOrg.objects.all()
         hot_orgs = all_orgs.order_by("-click_nums")[:5]
+        search_keywords = request.GET.get("keywords")
+        if search_keywords:
+            all_orgs = all_orgs.filter(Q(name__icontains=search_keywords) |
+                                       Q(desc__icontains=search_keywords)
+                                       )
         # 城市
         all_citys = CityDict.objects.all()
         # 取出筛选城市
@@ -129,7 +135,7 @@ class OrgDescView(View):
 
 class OrgTeacherView(View):
     """
-    机构老师
+    某机构所有老师
     """
     def get(self, request, org_id):
         course_org = CourseOrg.objects.get(id=int(org_id))
@@ -177,12 +183,18 @@ class TeacherListView(View):
     """
     def get(self, request):
         all_teachers = Teacher.objects.all()
-        sorted_teachers = Teacher.objects.all().order_by('-click_nums')[:3]
+        # 搜索机构老师
+        search_keywords = request.GET.get("keywords")
+        if search_keywords:
+            all_teachers = all_teachers.filter(Q(name__icontains=search_keywords) |
+                                               Q(work_company__icontains=search_keywords) |
+                                               Q(work_position__icontains=search_keywords)
+                                              )
         sort = request.GET.get('sort', "")
         if sort:
             if sort == 'hot':
                 all_teachers = all_teachers.order_by("-click_nums")
-
+        sorted_teachers = Teacher.objects.all().order_by('-click_nums')[:3]
         teacher_nums = all_teachers.count()
         try:
             page = request.GET.get('page', 1)

@@ -6,6 +6,8 @@ from django.shortcuts import render
 
 from django.views.generic import View
 from django.http import HttpResponse
+from django.db.models import Q
+
 from .models import Course, CourseResource, Video
 from operation.models import UserFavorite, CourseComments, UserCourse
 
@@ -18,6 +20,11 @@ class CourseListView(View):
     """
     def get(self, request):
         all_courses = Course.objects.all()
+        search_keywords = request.GET.get("keywords")
+        if search_keywords:
+            all_courses = all_courses.filter(Q(name__icontains=search_keywords) |
+                                             Q(desc__icontains=search_keywords) |
+                                             Q(detail__icontains=search_keywords))
         hot_courses = all_courses.order_by("-click_nums")[:3]
         sort = request.GET.get('sort', '')
         if sort:
