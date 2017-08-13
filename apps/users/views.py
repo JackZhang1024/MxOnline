@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import json
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.backends import ModelBackend
@@ -207,7 +208,7 @@ class UpdateUserPwdView(View):
     修改用户中心密码
     """
     def post(self, request):
-        modifypwd_form = ModifyPwdForm()
+        modifypwd_form = ModifyPwdForm(request.POST)
         if modifypwd_form.is_valid():
             password1 = request.POST.get("password1", "")
             password2 = request.POST.get("password2", "")
@@ -218,4 +219,4 @@ class UpdateUserPwdView(View):
             user.save()
             return HttpResponse('{"status": "success"}', content_type='application/json')
         else:
-            return HttpResponse('{"status": "fail", "msg":"密码错误"}', content_type='application/json')
+            return HttpResponse(json.dumps(modifypwd_form.errors), content_type='application/json')
