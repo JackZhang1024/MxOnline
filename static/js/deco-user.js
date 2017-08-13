@@ -12,7 +12,7 @@ function sendCodeChangeEmail($btn){
         cache: false,
         type: "get",
         dataType:'json',
-        url:"/users/sendemail_code/",
+        url:"/user/sendemail_code/",
         data:$('#jsChangeEmailForm').serialize(),
         async: true,
         beforeSend:function(XMLHttpRequest){
@@ -24,9 +24,8 @@ function sendCodeChangeEmail($btn){
                 Dml.fun.showValidateError($('#jsChangeEmail'), data.email);
             }else if(data.status == 'success'){
                 Dml.fun.showErrorTips($('#jsChangeEmailTips'), "邮箱验证码已发送");
-            }else if(data.status == 'failure'){
+            }else if(data.status == 'fail'){
                  Dml.fun.showValidateError($('#jsChangeEmail'), "邮箱验证码发送失败");
-            }else if(data.status == 'success'){
             }
         },
         complete: function(XMLHttpRequest){
@@ -50,7 +49,7 @@ var verify = verifyDialogSubmit(
         cache: false,
         type: 'post',
         dataType:'json',
-        url:"/users/update_email/ ",
+        url:"/user/update/email/",
         data:$('#jsChangeEmailForm').serialize(),
         async: true,
         beforeSend:function(XMLHttpRequest){
@@ -160,7 +159,7 @@ $(function(){
             cache: false,
             type: 'post',
             dataType:'json',
-            url:"/users/info/",
+            url:"/user/info/",
             data:$jsEditUserForm.serialize(),
             async: true,
             beforeSend:function(XMLHttpRequest){
@@ -174,7 +173,7 @@ $(function(){
                    _showValidateError($('#birth_day'), data.birday);
                 }else if(data.address){
                    _showValidateError($('#address'), data.address);
-                }else if(data.status == "failure"){
+                }else if(data.status == "fail"){
                      Dml.fun.showTipsDialog({
                         title: '保存失败',
                         h2: data.msg

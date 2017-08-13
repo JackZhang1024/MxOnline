@@ -16,7 +16,7 @@ from django.conf.urls import url
 
 
 from .views import UserInfoView, UserCoursesView, UserFavCoursesView, UserMessagesView, UserFavOrgsView, UserFavTeachersView
-from .views import UploadImageView, UpdateUserPwdView
+from .views import UploadImageView, UpdateUserPwdView, SendEmailCodeView, UpdateEmailView
 
 
 urlpatterns = [
@@ -35,5 +35,9 @@ urlpatterns = [
     # 用户头像上传
     url(r'^upload/image/$', UploadImageView.as_view(), name='upload_image'),
     # 修改用户中心密码
-    url(r'^update/pwd/$', UpdateUserPwdView.as_view(), name='update_userpwd')
+    url(r'^update/pwd/$', UpdateUserPwdView.as_view(), name='update_userpwd'),
+    # 发送修改用户邮箱验证码
+    url(r'^sendemail_code/$', SendEmailCodeView.as_view(), name='sendemail_code'),
+    # 用户中心邮箱修改
+    url(r'^update/email/$', UpdateEmailView.as_view(), name='update_email')
 ]
