@@ -10,7 +10,9 @@ from django.http import HttpResponse
 
 from .models import UserProfile, EmailVerifyRecord
 from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UploadImageForm, UserInfoForm
-from operation.models import UserCourse
+from operation.models import UserCourse, UserFavorite
+from organization.models import CourseOrg, Teacher
+from courses.models import Course
 from utils.email_send import send_register_email
 from utils.mixin_utils import LoginRequiredMixin
 
@@ -175,19 +177,43 @@ class UserCoursesView(View):
 # 用户课程收藏
 class UserFavCoursesView(View):
     def get(self, request):
-        return render(request, "usercenter-fav-course.html", {})
+        course_list = []
+        course_favs = UserFavorite.objects.filter(user=request.user, fav_type=1)
+        for fav_course in course_favs:
+            course_id = fav_course.fav_id
+            course = Course.objects.get(id=course_id)
+            course_list.append(course)
+        return render(request, "usercenter-fav-course.html", {
+            "course_list": course_list
+        })
 
 
 # 用户机构收藏
 class UserFavOrgsView(View):
     def get(self, request):
-        return render(request, "usercenter-fav-org.html", {})
+        org_list = []
+        org_favs = UserFavorite.objects.filter(user=request.user, fav_type=2)
+        for fav_org in org_favs:
+            org_id = fav_org.fav_id
+            org = CourseOrg.objects.get(id=org_id)
+            org_list.append(org)
+        return render(request, "usercenter-fav-org.html", {
+            "org_list": org_list
+        })
 
 
 # 用户教师收藏
 class UserFavTeachersView(View):
     def get(self, request):
-        return render(request, "usercenter-fav-teacher.html", {})
+        teacher_list = []
+        teacher_favs = UserFavorite.objects.filter(user=request.user, fav_type=3)
+        for fav_teacher in teacher_favs:
+            teacher_id = fav_teacher.fav_id
+            teacher = Teacher.objects.get(id=teacher_id)
+            teacher_list.append(teacher)
+        return render(request, "usercenter-fav-teacher.html", {
+            "teacher_list": teacher_list
+        })
 
 
 # 用户消息
@@ -215,7 +241,7 @@ class UploadImageView(LoginRequiredMixin, View):
             return HttpResponse('{"status": "fail"}', content_type='application/json')
 
 
-class UpdateUserPwdView(View):
+class UpdateUserPwdView(LoginRequiredMixin, View):
     """
     修改用户中心密码
     """
@@ -234,7 +260,7 @@ class UpdateUserPwdView(View):
             return HttpResponse(json.dumps(modifypwd_form.errors), content_type='application/json')
 
 
-class SendEmailCodeView(View):
+class SendEmailCodeView(LoginRequiredMixin, View):
     """
     发送修改邮箱验证码
     """
