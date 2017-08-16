@@ -1,16 +1,19 @@
 # -*- coding:utf-8 -*-
 import json
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import make_password
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
-from .models import UserProfile, EmailVerifyRecord
+from pure_pagination import Paginator, PageNotAnInteger
+
+from .models import UserProfile, EmailVerifyRecord, Banner
 from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UploadImageForm, UserInfoForm
-from operation.models import UserCourse, UserFavorite
+from operation.models import UserCourse, UserFavorite, UserMessage
 from organization.models import CourseOrg, Teacher
 from courses.models import Course
 from utils.email_send import send_register_email
@@ -28,9 +31,23 @@ class CustomBackEnd(ModelBackend):
             return None
 
 
+class IndexView(View):
+    def get(self, request):
+        all_banners = Banner.objects.all().order_by('-index')
+        banner_courses = Course.objects.filter(is_banner=True)[:3]
+        all_courses = Course.objects.filter(is_banner=False)[:6]
+        course_orgs = CourseOrg.objects.all()[:15]
+        return render(request, 'index.html', {
+            "all_banners": all_banners,
+            "banner_courses": banner_courses,
+            "all_courses": all_courses,
+            "course_orgs": course_orgs
+        })
+
+
 class ModifyPwdView(View):
     def post(self, request):
-        modifypwd_form = ModifyPwdForm()
+        modifypwd_form = ModifyPwdForm(request.POST)
         if modifypwd_form.is_valid():
             password1 = request.POST.get("password1", "")
             password2 = request.POST.get("password2", "")
@@ -105,10 +122,25 @@ class RegisterView(View):
             user_profile.is_active = False
             user_profile.password = make_password(password)
             user_profile.save()
+
+            # 写入欢迎注册消息
+            user_message = UserMessage()
+            user_message.user = user_profile.id
+            user_message.message = "欢迎注册慕学在线学习网"
+            user_message.save()
+
             send_register_email(email=user_profile.email, send_type="register")
             return render(request, "login.html")
         else:
             return render(request, "register.html", {"register_form": register_form})
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        # from django.core.urlresolvers import reverse
+        # 重定向到index页面
+        return HttpResponseRedirect(reverse('index'))
 
 
 class LoginView(View):
@@ -124,7 +156,8 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, "index.html")
+                    # 重定向到index页面
+                    return HttpResponseRedirect(reverse('index'))
                 else:
                     return render(request, "login.html", {"msg": "用户名未激活 "})
             else:
@@ -134,6 +167,7 @@ class LoginView(View):
 
 
 # Create your views here.
+# 下面这个是最初级的写法 没有通过View来写
 def user_login(request):
     if request.method == "POST":
         user_name = request.POST.get("username", "")
@@ -153,6 +187,7 @@ class UserInfoView(LoginRequiredMixin, View):
     """
     用户信息
     """
+
     def get(self, request):
         return render(request, "usercenter-info.html", {})
 
@@ -166,7 +201,7 @@ class UserInfoView(LoginRequiredMixin, View):
 
 
 # 用户课程
-class UserCoursesView(View):
+class UserCoursesView(LoginRequiredMixin, View):
     def get(self, request):
         user_courses = UserCourse.objects.filter(user=request.user)
         return render(request, "usercenter-mycourse.html", {
@@ -175,7 +210,7 @@ class UserCoursesView(View):
 
 
 # 用户课程收藏
-class UserFavCoursesView(View):
+class UserFavCoursesView(LoginRequiredMixin, View):
     def get(self, request):
         course_list = []
         course_favs = UserFavorite.objects.filter(user=request.user, fav_type=1)
@@ -189,7 +224,7 @@ class UserFavCoursesView(View):
 
 
 # 用户机构收藏
-class UserFavOrgsView(View):
+class UserFavOrgsView(LoginRequiredMixin, View):
     def get(self, request):
         org_list = []
         org_favs = UserFavorite.objects.filter(user=request.user, fav_type=2)
@@ -203,7 +238,7 @@ class UserFavOrgsView(View):
 
 
 # 用户教师收藏
-class UserFavTeachersView(View):
+class UserFavTeachersView(LoginRequiredMixin, View):
     def get(self, request):
         teacher_list = []
         teacher_favs = UserFavorite.objects.filter(user=request.user, fav_type=3)
@@ -217,9 +252,23 @@ class UserFavTeachersView(View):
 
 
 # 用户消息
-class UserMessagesView(View):
+class UserMessagesView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "usercenter-message.html", {})
+        user_messages = UserMessage.objects.filter(user=request.user.id)
+        all_unread_messages = UserMessage.objects.filter(user=request.user.id, has_read=False)
+        for unread_message in all_unread_messages:
+            unread_message.has_read = True
+            unread_message.save()
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        # Provide Paginator with the request object for complete querystring generation
+        p = Paginator(user_messages, 3, request=request)
+        messages = p.page(page)
+        return render(request, "usercenter-message.html", {
+            "messages": messages
+        })
 
 
 # 用户头像上传处理
@@ -245,6 +294,7 @@ class UpdateUserPwdView(LoginRequiredMixin, View):
     """
     修改用户中心密码
     """
+
     def post(self, request):
         modifypwd_form = ModifyPwdForm(request.POST)
         if modifypwd_form.is_valid():
@@ -264,6 +314,7 @@ class SendEmailCodeView(LoginRequiredMixin, View):
     """
     发送修改邮箱验证码
     """
+
     def get(self, request):
         email = request.GET.get('email', '')
         if UserProfile.objects.filter(email=email):
@@ -276,6 +327,7 @@ class UpdateEmailView(LoginRequiredMixin, View):
     """
     修改邮箱
     """
+
     def post(self, request):
         email = request.POST.get('email', '')
         code = request.POST.get('code', '')
@@ -290,4 +342,15 @@ class UpdateEmailView(LoginRequiredMixin, View):
             return HttpResponse('{"email": "验证码错误"}', content_type='application/json')
 
 
+def page_not_fount(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response('404.html', {})
+    response.status_code = 404
+    return response
 
+
+def page_server_error(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response('500.html', {})
+    response.status_code = 500
+    return response

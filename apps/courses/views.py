@@ -83,6 +83,8 @@ class CourseInfoView(View):
     """
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
+        course.students +=1
+        course.save()
         course_resources = CourseResource.objects.filter(course=course)
         user_courses = UserCourse.objects.filter(user=request.user, course=course)
         if not user_courses:
