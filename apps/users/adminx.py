@@ -13,8 +13,12 @@
 
 import xadmin
 from xadmin import views
+from xadmin.plugins.auth import UserAdmin
+from .models import EmailVerifyRecord, Banner, UserProfile
 
-from .models import EmailVerifyRecord, Banner
+
+class UserProfileAdmin(UserAdmin):
+    pass
 
 
 class BaseSetting(object):

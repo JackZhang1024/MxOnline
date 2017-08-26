@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 SECRET_KEY = 'pzvn76v9yq=i)n2sy9agk+gq*k0atfoq(o(92w49q0su97q6br'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -152,6 +152,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
+DEFAULT_FROM_EMAI = "zhunixingfu365@sina.cn"
+
 EMAIL_HOST = "smtp.sina.cn"
 EMAIL_PORT = 25
 EMAIL_HOST_USER = "zhunixingfu365@sina.cn"
@@ -162,7 +164,7 @@ EMAIL_FROM = "zhunixingfu365@sina.cn"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 PAGINATION_SETTINGS = {
