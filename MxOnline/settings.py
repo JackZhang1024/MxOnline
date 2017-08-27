@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'captcha',
     'pure_pagination',
+    'DjangoUeditor',
 ]
 
 # 这个配置很重要 如果要复用AbstractUser则必须配置如下代码

@@ -62,7 +62,10 @@ urlpatterns = [
     # url(r'^static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
 
     # 用户Url配置
-    url(r'^user/', include('users.urls', namespace="user"))
+    url(r'^user/', include('users.urls', namespace="user")),
+
+    # 富文本编辑相关Url配置
+    url(r'^ueditor/', include('DjangoUeditor.urls'))
 
 ]
 

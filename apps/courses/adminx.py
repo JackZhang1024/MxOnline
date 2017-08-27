@@ -33,12 +33,13 @@ class CourseAdmin(object):
     search_fields = ['name', 'desc', 'detail', 'degree', 'students']
     list_filter = ['name', 'desc', 'detail', 'degree', 'learn_times', 'students']
     model_icon = 'fa fa-heart'
-    ordering = ['-click_nums']
-    readonly_fields = ['click_nums', 'students']
-    list_editable = ['degree', 'desc']
-    exclude = ['fav_nums']
+    ordering = ['-click_nums']  # 设置默认排序
+    readonly_fields = ['click_nums', 'students']  # 设置只读字段
+    list_editable = ['degree', 'desc']  # 设置在列表中可以进行修改
+    exclude = ['fav_nums']  # 可以隐藏该字段
     inlines = [LessonInline, CourseResourceInline]
     # refresh_times = [3, 10]  # 从3秒或者10秒中选择一个刷新时间来刷新页面 定时刷新
+    style_fields = {'detail': 'ueditor'}  # 给该字段使用ueditor样式
 
     def queryset(self):
         qs = super(CourseAdmin, self).queryset()
