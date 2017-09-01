@@ -23,6 +23,8 @@ from django.views.static import serve
 
 
 # from users.views import user_login
+
+from users.views import display_httprequest
 from users.views import IndexView, LoginView, RegisterView, ActivateUserView, ForgetPwdView, ResetPwdView, ModifyPwdView, LogoutView
 # from organization.views import OrgView
 from MxOnline.settings import MEDIA_ROOT
@@ -32,6 +34,9 @@ urlpatterns = [
     # url(r'^admin/', admin.site.urls),
 
     url(r'^$', IndexView.as_view(), name='index'),
+
+    # 测试request.META中包含的信息
+    url(r'^test/$', display_httprequest, name='display_httprequest'),
 
     # TemplateView.as_view(tempalate_name='index.html') 适用于处理静态页面
     # url(r'^$', TemplateView.as_view(template_name="index.html"), name='index'),

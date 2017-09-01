@@ -342,6 +342,16 @@ class UpdateEmailView(LoginRequiredMixin, View):
             return HttpResponse('{"email": "验证码错误"}', content_type='application/json')
 
 
+# 用来测试request.META中的信息
+def display_httprequest(request):
+    values = request.META.items()
+    values.sort()
+    html = []
+    for k, v in values:
+        html.append('<tr><td>%s<td><td>%s<td></tr>' % (k, v))
+    return HttpResponse('<table>%s</table>' % '\n'.join(html))
+
+
 def page_not_fount(request):
     from django.shortcuts import render_to_response
     response = render_to_response('404.html', {})
