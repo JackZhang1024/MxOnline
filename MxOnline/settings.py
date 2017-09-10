@@ -33,7 +33,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,9 +56,8 @@ INSTALLED_APPS = [
 # 这个配置很重要 如果要复用AbstractUser则必须配置如下代码
 AUTH_USER_MODEL = 'users.UserProfile'
 AUTHENTICATION_BACKENDS = (
-     "users.views.CustomBackEnd",
+    "users.views.CustomBackEnd",
 )
-
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,20 +92,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MxOnline.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mxonline',
-        'USER_NAME': 'root',
+        'NAME': 'mxonline_live',
+        'USER_NAME': 'zhang',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -127,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
@@ -142,11 +137,32 @@ USE_L10N = True
 # USE_TZ = True 使用的UTC时间 USE_TZ =False 使用的是本地时间
 USE_TZ = False
 
+# 设置Django ORM LOG 日志
+# LOGLOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'propagate': True,
+#             'level': 'DEBUG',
+#         },
+#     }
+# }
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # 设置根目录下的子目录static为静态文件搜索为第一优先级
 STATICFILES_DIRS = [
@@ -164,9 +180,6 @@ EMAIL_FROM = "zhunixingfu365@sina.cn"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 
 PAGINATION_SETTINGS = {
     'PAGE_RANGE_DISPLAYED': 10,

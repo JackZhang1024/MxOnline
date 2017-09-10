@@ -22,10 +22,10 @@ class Course(models.Model):
     learn_times = models.IntegerField(verbose_name=u"学习时长(分钟数)", default=0)
     students = models.IntegerField(default=0, verbose_name=u"学习人数")
     fav_nums = models.IntegerField(default=0, verbose_name=u"收藏人数")
-    category = models.CharField(default=u"后端开发", max_length=20, verbose_name=u"课程类别")
     image = models.ImageField(upload_to='course/%Y/%m', verbose_name=u"封面图", max_length=100)
     click_nums = models.IntegerField(default=0, verbose_name=u"点击数")
-    tag = models.CharField(default=u"", max_length=20, verbose_name=u"课程标签")
+    tag = models.CharField(default=u'', max_length=20, verbose_name=u"课程标签")
+    category = models.CharField(default=u'', max_length=20, verbose_name=u"课程类别")
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
     you_need_know = models.CharField(max_length=100, verbose_name=u"课前须知", default=u"")
     what_you_learn = models.CharField(max_length=100, verbose_name=u"知识获取", default=u"")
@@ -112,3 +112,4 @@ class CourseResource(models.Model):
 
     def __unicode__(self):
         return self.name
+
