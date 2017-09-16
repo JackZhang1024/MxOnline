@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 SECRET_KEY = 'pzvn76v9yq=i)n2sy9agk+gq*k0atfoq(o(92w49q0su97q6br'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -162,12 +162,14 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = '/home/Python/WebDeploy/mxonline_static/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # 设置根目录下的子目录static为静态文件搜索为第一优先级
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static')
+# ]
 
 DEFAULT_FROM_EMAI = "zhunixingfu365@sina.cn"
 
